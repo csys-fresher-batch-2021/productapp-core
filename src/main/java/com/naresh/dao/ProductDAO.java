@@ -13,4 +13,6 @@ public interface ProductDAO {
 	boolean deleteProduct(int id) throws Exception;
 	
 	ArrayList<Product> findAll() throws Exception;
+	
+	Product findOne(int productId) throws Exception;
 }

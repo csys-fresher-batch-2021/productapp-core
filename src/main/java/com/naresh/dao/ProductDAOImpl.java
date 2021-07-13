@@ -13,7 +13,7 @@ public class ProductDAOImpl implements ProductDAO {
 	public boolean save(Product product) throws Exception {
 
 		String sql = "insert into products(id,name,price) values(" + product.id + ",'" + product.name + "',"
-				+ product.price + ")";//Bad Practice: Avoid appending query string. SQL Injection.
+				+ product.price + ")";// Bad Practice: Avoid appending query string. SQL Injection.
 		System.out.println(sql);
 
 		Connection connection = ConnectionUtil.getConnection();
@@ -32,14 +32,13 @@ public class ProductDAOImpl implements ProductDAO {
 		Connection connection = ConnectionUtil.getConnection();
 		PreparedStatement pst = connection.prepareStatement(sql);
 		pst.setInt(1, id);// 1st ?
-		
-		
+
 		int rows = pst.executeUpdate();
 		System.out.println("No of rows deleted :" + rows);
 
 		return false;
 	}
-	
+
 	public boolean updateProduct(Product product) throws Exception {
 
 		String sql = "update products set price = ? where id = ?";// Good Practice
@@ -48,47 +47,78 @@ public class ProductDAOImpl implements ProductDAO {
 		Connection connection = ConnectionUtil.getConnection();
 		PreparedStatement pst = connection.prepareStatement(sql);
 		pst.setInt(1, product.price);// 1st ?
-		pst.setInt(2, product.id);		
-		
+		pst.setInt(2, product.id);
+
 		int rows = pst.executeUpdate();
 		System.out.println("No of rows update :" + rows);
 
 		return false;
 	}
-	
-	public ArrayList<Product> findAll() throws Exception {
-		
 
-		//1. Get DB connection
+	public ArrayList<Product> findAll() throws Exception {
+
+		// 1. Get DB connection
 		Connection connection = ConnectionUtil.getConnection();
-		
+
 		String sql = "select id,name,price from products";
-		
-		//2. Prepare Query
+
+		// 2. Prepare Query
 		PreparedStatement pst = connection.prepareStatement(sql);
-		
-		//3. Execute Query and get results
+
+		// 3. Execute Query and get results
 		ResultSet rs = pst.executeQuery();
-		
-		//4. Iterate results and get row and column values
+
+		// 4. Iterate results and get row and column values
 		ArrayList<Product> productList = new ArrayList<Product>();
-		while(rs.next()) {
-			//Get Column values
-			int id = rs.getInt("id"); 
+		while (rs.next()) {
+			// Get Column values
+			int id = rs.getInt("id");
 			String name = rs.getString("name");
 			int price = rs.getInt("price");
-			
-			Product product = new Product (id,name,price);
-			
-			//System.out.println(id + "-" + name + "-" + price);
+
+			Product product = new Product(id, name, price);
+
+			// System.out.println(id + "-" + name + "-" + price);
 			System.out.println(product);
-			
+
 			productList.add(product);
-			
+
 		}
-		
+
 		return productList;
-		
+
+	}
+
+	public Product findOne(int productId) throws Exception {
+
+		// 1. Get DB connection
+		Connection connection = ConnectionUtil.getConnection();
+
+		String sql = "select id,name,price from products where id = ?";
+
+		// 2. Prepare Query
+		PreparedStatement pst = connection.prepareStatement(sql);
+		pst.setInt(1, productId);
+
+		// 3. Execute Query and get results
+		ResultSet rs = pst.executeQuery();
+
+		// 4. Iterate results and get row and column values
+		Product product = null;
+		if (rs.next()) {
+			// Get Column values
+			int id = rs.getInt("id");
+			String name = rs.getString("name");
+			int price = rs.getInt("price");
+
+			product = new Product(id, name, price);
+
+			// System.out.println(id + "-" + name + "-" + price);
+			System.out.println(product);
+		}
+
+		return product;
+
 	}
 
 }
