@@ -8,9 +8,9 @@ public class ProductValidatorTest {
 	
 	public static void main(String[] args) {
 
-		//testValidProduct();// Expectation: SUCCESS
+		testValidProduct();// Expectation: SUCCESS
 		//testInValidProductName();// Expectation: Invalid Product Name
-		testInValidProductPrice();// Expectation: Invalid Product Price
+		//testInValidProductPrice();// Expectation: Invalid Product Price
 	}
 	
 	private static void testInValidProductPrice() {
