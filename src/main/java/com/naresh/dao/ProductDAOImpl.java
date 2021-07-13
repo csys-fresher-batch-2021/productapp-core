@@ -2,6 +2,8 @@ package com.naresh.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import com.naresh.model.Product;
 import com.naresh.util.ConnectionUtil;
@@ -52,6 +54,41 @@ public class ProductDAOImpl implements ProductDAO {
 		System.out.println("No of rows update :" + rows);
 
 		return false;
+	}
+	
+	public ArrayList<Product> findAll() throws Exception {
+		
+
+		//1. Get DB connection
+		Connection connection = ConnectionUtil.getConnection();
+		
+		String sql = "select id,name,price from products";
+		
+		//2. Prepare Query
+		PreparedStatement pst = connection.prepareStatement(sql);
+		
+		//3. Execute Query and get results
+		ResultSet rs = pst.executeQuery();
+		
+		//4. Iterate results and get row and column values
+		ArrayList<Product> productList = new ArrayList<Product>();
+		while(rs.next()) {
+			//Get Column values
+			int id = rs.getInt("id"); 
+			String name = rs.getString("name");
+			int price = rs.getInt("price");
+			
+			Product product = new Product (id,name,price);
+			
+			//System.out.println(id + "-" + name + "-" + price);
+			System.out.println(product);
+			
+			productList.add(product);
+			
+		}
+		
+		return productList;
+		
 	}
 
 }
