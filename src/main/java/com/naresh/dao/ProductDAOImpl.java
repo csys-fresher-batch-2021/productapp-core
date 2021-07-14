@@ -18,14 +18,26 @@ public class ProductDAOImpl implements ProductDAO {
 				+ product.price + ")";// Bad Practice: Avoid appending query string. SQL Injection.
 		System.out.println(sql);
 
+		Connection connection = null;
+		PreparedStatement pst = null;
 		try {
-			Connection connection = ConnectionUtil.getConnection();
-			PreparedStatement pst = connection.prepareStatement(sql);
+			connection = ConnectionUtil.getConnection();
+			pst = connection.prepareStatement(sql);
 			int rows = pst.executeUpdate();
 			System.out.println("No of rows inserted :" + rows);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DBException(e, "Unable to add products");
+		}
+		finally {
+			/*if(pst !=null) {
+				pst.close();
+			}
+			if(connection !=null) {
+				connection.close();
+			}*/
+			ConnectionUtil.close(pst, connection);
+			
 		}
 
 		return false;
@@ -36,9 +48,11 @@ public class ProductDAOImpl implements ProductDAO {
 		String sql = "delete from products where id = ?";// Good Practice
 		System.out.println(sql);
 
+		Connection connection = null;
+		PreparedStatement pst = null;
 		try {
-			Connection connection = ConnectionUtil.getConnection();
-			PreparedStatement pst = connection.prepareStatement(sql);
+			connection = ConnectionUtil.getConnection();
+			pst = connection.prepareStatement(sql);
 			pst.setInt(1, id);// 1st ?
 
 			int rows = pst.executeUpdate();
@@ -46,6 +60,11 @@ public class ProductDAOImpl implements ProductDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DBException(e, "Unable to delete product ");
+		}
+		finally {
+			
+			ConnectionUtil.close(pst, connection);
+			
 		}
 
 		return false;
@@ -56,9 +75,12 @@ public class ProductDAOImpl implements ProductDAO {
 		String sql = "update products set price = ? where id = ?";// Good Practice
 		System.out.println(sql);
 
+		Connection connection = null;
+		PreparedStatement pst = null;
+		
 		try {
-			Connection connection = ConnectionUtil.getConnection();
-			PreparedStatement pst = connection.prepareStatement(sql);
+			connection = ConnectionUtil.getConnection();
+			pst = connection.prepareStatement(sql);
 			pst.setInt(1, product.price);// 1st ?
 			pst.setInt(2, product.id);
 
@@ -69,24 +91,31 @@ public class ProductDAOImpl implements ProductDAO {
 			e.printStackTrace();
 			throw new DBException(e, "Unable to update products");
 		}
+		finally {
+			ConnectionUtil.close(pst, connection);
+		}
 		return false;
 	}
 
 	public ArrayList<Product> findAll() throws DBException {
 
+		Connection connection = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		
 		// 4. Iterate results and get row and column values
 		ArrayList<Product> productList;
 		try {
 			// 1. Get DB connection
-			Connection connection = ConnectionUtil.getConnection();
+			connection = ConnectionUtil.getConnection();
 
 			String sql = "select id,name,price from products";
 
 			// 2. Prepare Query
-			PreparedStatement pst = connection.prepareStatement(sql);
+			pst = connection.prepareStatement(sql);
 
 			// 3. Execute Query and get results
-			ResultSet rs = pst.executeQuery();
+			rs = pst.executeQuery();
 
 			productList = new ArrayList<Product>();
 			while (rs.next()) {
@@ -107,6 +136,9 @@ public class ProductDAOImpl implements ProductDAO {
 			e.printStackTrace();
 			throw new DBException(e, "Unable to fetch product details");
 		}
+		finally {
+			ConnectionUtil.close(pst, rs, connection);
+		}
 
 		return productList;
 
@@ -114,20 +146,24 @@ public class ProductDAOImpl implements ProductDAO {
 
 	public Product findOne(int productId) throws DBException {
 
+		Connection connection = null;
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		
 		// 4. Iterate results and get row and column values
 		Product product;
 		try {
 			// 1. Get DB connection
-			Connection connection = ConnectionUtil.getConnection();
+			connection = ConnectionUtil.getConnection();
 
 			String sql = "select id,name,price from products where id = ?";
 
 			// 2. Prepare Query
-			PreparedStatement pst = connection.prepareStatement(sql);
+			pst = connection.prepareStatement(sql);
 			pst.setInt(1, productId);
 
 			// 3. Execute Query and get results
-			ResultSet rs = pst.executeQuery();
+			rs = pst.executeQuery();
 
 			product = null;
 			if (rs.next()) {
@@ -144,6 +180,9 @@ public class ProductDAOImpl implements ProductDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DBException(e, "Unable to find product details");
+		}
+		finally {
+			ConnectionUtil.close(pst, rs, connection);
 		}
 
 		return product;
