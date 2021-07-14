@@ -2,9 +2,9 @@ package com.naresh.model;
 
 public class Product {
 
-	public int id;
-	public String name;
-	public int price;
+	private int id;
+	private String name;
+	private int price;
 	
 	public Product() {
 		
@@ -20,5 +20,18 @@ public class Product {
 	public String toString() {
 		return "Product [id=" + id + ", name=" + name + ", price=" + price + "]";
 	}
+	
+	public void setPrice(int price) {
+		if(price < 0) {
+			throw new IllegalArgumentException("Invalid Price");
+		}
+		this.price= price;
+	}
+	
+	public int getPrice() {
+		return price;
+	}
+	
+	
 
 }
