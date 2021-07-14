@@ -1,17 +1,19 @@
 package com.naresh.validator;
 
+import com.naresh.exception.ValidationException;
 import com.naresh.model.Product;
 
 public class ProductValidator {
 
-	public static void validate(Product product) throws Exception {		
-		
-		if(product.name == null || product.name.trim().equals("") ) {
-			throw new Exception("Invalid Product Name");
+	public static void validate(Product product) throws ValidationException {
+
+		if (product.name == null || product.name.trim().equals("")) {
+			throw new ValidationException("Invalid Product Name"); // Problem Rise - shout
+		} else if (product.price < 0) {
+			throw new ValidationException("Invalid Price");
 		}
-		else if (product.price <=0) {
-			throw new Exception ("Invalid Price");
-		}
-		
+		System.out.println("Validation Success");
+
 	}
+
 }

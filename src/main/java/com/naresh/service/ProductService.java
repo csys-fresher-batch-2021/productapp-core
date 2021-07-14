@@ -2,6 +2,9 @@ package com.naresh.service;
 
 import com.naresh.dao.ProductDAO;
 import com.naresh.dao.ProductDAOImpl;
+import com.naresh.exception.DBException;
+import com.naresh.exception.ServiceException;
+import com.naresh.exception.ValidationException;
 import com.naresh.model.Product;
 import com.naresh.validator.ProductValidator;
 
@@ -9,7 +12,7 @@ public class ProductService {
 
 	private ProductDAO productDAO = new ProductDAOImpl();
 	
-	public void addProduct(Product product) throws Exception {
+	public void addProduct(Product product) throws ServiceException {
 		
 		try {
 			
@@ -19,13 +22,13 @@ public class ProductService {
 			productDAO.save(product);
 			System.out.println("Successfully added product");
 			
-		} catch (Exception e) {
+		} catch (ValidationException | DBException e ) {
 
 			String errorMessage = e.getMessage();
 			System.out.println("Failure:" + errorMessage);
 			e.printStackTrace();
-			throw new Exception(errorMessage);
-			
+			throw new ServiceException(e, errorMessage);			
 		}
+		
 	}
 }

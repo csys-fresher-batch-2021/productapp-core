@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.naresh.exception.DBException;
+
 public class ConnectionUtil {
 
 	/**
@@ -11,7 +13,7 @@ public class ConnectionUtil {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Connection getConnection() throws Exception {
+	public static Connection getConnection() throws DBException {
 		String driverClassName = "oracle.jdbc.driver.OracleDriver";		
 		String url = "jdbc:oracle:thin:@localhost:1521:XE";		
 		String username = "system";		
@@ -26,10 +28,10 @@ public class ConnectionUtil {
 			connection = DriverManager.getConnection(url, username,password);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			throw new Exception("Unable to load the db driver class");
+			throw new DBException(e,"Unable to load the db driver class");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new Exception("Unable to connect database");
+			throw new DBException(e,"Unable to connect database");
 		}
 		
 		System.out.println(connection);		
