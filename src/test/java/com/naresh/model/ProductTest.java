@@ -5,14 +5,13 @@ public class ProductTest {
 	public static void main(String[] args) {
 
 		Product product1 = new Product(1, "Sugar", 100);
-		//hide the internals
-		//product1.price = -100;
+		Product product2 =  new Product();
+		product2.setId(2);
+		product2.setName("Tomato");
+		product2.setPrice(30);		
 		
-		
-		//provide setter methods to set values
-		product1.setPrice(-100);
-		
-		System.out.println(product1.getPrice());
+		System.out.println("P1 Price:" + product1.getPrice());
+		System.out.println("P2 Price:" + product2.getPrice());
 	}
 
 }

@@ -14,8 +14,8 @@ public class ProductDAOImpl implements ProductDAO {
 
 	public boolean save(Product product) throws DBException {
 
-		String sql = "insert into products(id,name,price) values(" + product.id + ",'" + product.name + "',"
-				+ product.price + ")";// Bad Practice: Avoid appending query string. SQL Injection.
+		String sql = "insert into products(id,name,price) values(" + product.getId() + ",'" + product.getName() + "',"
+				+ product.getPrice() + ")";// Bad Practice: Avoid appending query string. SQL Injection.
 		System.out.println(sql);
 
 		Connection connection = null;
@@ -81,8 +81,8 @@ public class ProductDAOImpl implements ProductDAO {
 		try {
 			connection = ConnectionUtil.getConnection();
 			pst = connection.prepareStatement(sql);
-			pst.setInt(1, product.price);// 1st ?
-			pst.setInt(2, product.id);
+			pst.setInt(1, product.getPrice());// 1st ?
+			pst.setInt(2, product.getId());
 
 			int rows = pst.executeUpdate();
 			System.out.println("No of rows update :" + rows);
@@ -124,7 +124,11 @@ public class ProductDAOImpl implements ProductDAO {
 				String name = rs.getString("name");
 				int price = rs.getInt("price");
 
-				Product product = new Product(id, name, price);
+				//Product product = new Product(id, name, price);
+				Product product = new Product();
+				product.setId(id);
+				product.setName(name);
+				product.setPrice(price);
 
 				// System.out.println(id + "-" + name + "-" + price);
 				System.out.println(product);
