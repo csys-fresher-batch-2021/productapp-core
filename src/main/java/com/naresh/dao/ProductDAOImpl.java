@@ -12,6 +12,30 @@ import com.naresh.util.ConnectionUtil;
 
 public class ProductDAOImpl implements ProductDAO {
 
+	public boolean runDMLQuery(String sql) throws DBException {
+		System.out.println(sql);
+
+		Connection connection = null;
+		PreparedStatement pst = null;
+		try {
+			connection = ConnectionUtil.getConnection();
+			pst = connection.prepareStatement(sql);
+			int rows = pst.executeUpdate();
+			
+			System.out.println("No of rows inserted :" + rows);
+			return rows == 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DBException(e, "Unable to add products");
+		}
+		finally {
+			
+			ConnectionUtil.close(pst, connection);
+			
+		}
+
+	}
+	
 	public boolean save(Product product) throws DBException {
 
 		String sql = "insert into products(id,name,price) values(" + product.getId() + ",'" + product.getName() + "',"
